@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/home_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="35dp"
+        android:text="WELCOME BACK, ALEN!"
+        android:textSize="20sp"
+        android:textColor="#FFFFFFFF" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginLeft="92dp"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/settings_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/gear"
+            android:layout_marginEnd="65dp"
+            app:tint="#FFFFFFFF" />
+
+        <ImageView
+            android:id="@+id/notifications_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/notification"
+            android:layout_marginEnd="60dp"
+            app:tint="#FFFFFFFF" />
+
+        <ImageView
+            android:id="@+id/home_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/home"
+            app:tint="#FFFFFFFF" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/create_room_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginRight="80dp"
+        android:padding="20dp"
+        android:backgroundTint="#FFF07272"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/irish_grover"
+        android:text="CREATE A NEW ROOM"
+        android:textColor="#FF000000"
+        app:cornerRadius="5dp" />
+
+    <Button
+        android:id="@+id/join_room_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="80dp"
+        android:padding="20dp"
+        android:backgroundTint="#FF67C535"
+        android:drawablePadding="100dp"
+        android:fontFamily="@font/irish_grover"
+        android:text="JOIN IN CREATED ROOM"
+        android:textColor="#FF000000"
+        app:cornerRadius="5dp" />
+
+    <TextView
+        android:id="@+id/popular_rooms_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginStart="88dp"
+        android:text="🔥 Popular rooms right now"
+        android:textSize="18sp"
+        android:textColor="#FFFFFFFF" />
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"
+        android:background="#FFFFFFFF" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="-25dp">
+
+            <TextView
+                android:id="@+id/room_name_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+                android:text="Ekipa u autu"
+                android:textSize="16sp"
+                android:textColor="#FFFFFFFF" />
+
+            <TextView
+                android:id="@+id/room_users_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+                android:text="5 users"
+                android:textSize="16sp"
+                android:textColor="#FFFFFFFF" />
+
+            <TextView
+                android:id="@+id/room_playing_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Playing: Grse"
+                android:textSize="16sp"
+                android:textColor="#FFFFFFFF" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="-20dp">
+
+            <TextView
+                android:id="@+id/room_name_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+                android:text="Rodjendan"
+                android:textSize="16sp"
+                android:textColor="#FFFFFFFF" />
+
+            <TextView
+                android:id="@+id/room_users_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+                android:text="12 users"
+                android:textSize="16sp"
+                android:textColor="#FFFFFFFF" />
+
+            <TextView
+                android:id="@+id/room_playing_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Playing: Aca Lukas"
+                android:textSize="16sp"
+                android:textColor="#FFFFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

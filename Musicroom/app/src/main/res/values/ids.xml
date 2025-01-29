@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="roomNameTextView" type="id" />
+    <item name="roomCodeTextView" type="id" />
+    <item name="songInputEditText" type="id" />
+    <item name="addSongButton" type="id" />
+    <item name="songListRecyclerView" type="id" />
+    <item name="currentlyPlayingTextView" type="id" />
+    <item name="playButton" type="id" />
+    <item name="searchSongButton" type="id" />
+    <item name="stopButton" type="id" />
+    <item name="exitRoomButton" type="id" />
+    <item name="userNameTextView" type="id" />
+    <item name="guestRoomTitleTextView" type="id" />
+    <item name="suggestSongButton" type="id" />
+    <item name="roomTitleTextView" type="id" />
+    <item name="playSongButton" type="id" />
+    <item name="queueRecyclerView" type="id" />
+</resources>

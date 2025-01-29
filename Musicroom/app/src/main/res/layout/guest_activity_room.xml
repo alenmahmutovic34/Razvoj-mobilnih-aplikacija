@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/roomNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Kod sobe:"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/currentlyPlayingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Trenutno svira: Nema"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/songInputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="Unesite ime pesme"
+        android:inputType="text"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/searchSongButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Pretraži pesmu" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/songListRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:background="#FFEEEEEE"
+        android:padding="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/queueRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1"
+        android:background="#FFDDDDDD"
+        android:padding="8dp" />
+
+    <!-- Removed Play and Stop Buttons -->
+
+    <Button
+        android:id="@+id/exitRoomButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Izlaz iz sobe" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userListRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:background="#FFEEEEEE"
+        android:padding="8dp" />
+
+</LinearLayout>
