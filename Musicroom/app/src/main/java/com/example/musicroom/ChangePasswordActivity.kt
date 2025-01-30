@@ -1,5 +1,7 @@
 package com.example.musicroom
 
+import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -20,7 +22,9 @@ class ChangePasswordActivity : AppCompatActivity() {
         val oldPasswordEditText = findViewById<EditText>(R.id.oldPasswordEditText)
         val newPasswordEditText = findViewById<EditText>(R.id.newPasswordEditText)
         val changePasswordButton = findViewById<Button>(R.id.changePasswordButton)
+        val backToLoginButton = findViewById<Button>(R.id.backToLoginButton) // Dugme za povratak na login
 
+        // Dugme za promenu lozinke
         changePasswordButton.setOnClickListener {
             val username = usernameEditText.text.toString().trim()
             val oldPassword = oldPasswordEditText.text.toString().trim()
@@ -31,7 +35,13 @@ class ChangePasswordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val url = "http://10.0.2.2:8080/changePassword" // Adresa servera (localhost za emulator)
+            // Prikaz progres dijaloga
+            val progressDialog = ProgressDialog(this)
+            progressDialog.setMessage("Menjam lozinku...")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            val url = "https://zavrsnirmas.onrender.com/changePassword" // Adresa servera
             val client = OkHttpClient()
 
             val json = JSONObject().apply {
@@ -50,21 +60,48 @@ class ChangePasswordActivity : AppCompatActivity() {
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     runOnUiThread {
-                        Toast.makeText(this@ChangePasswordActivity, "Greška: ${e.message}", Toast.LENGTH_SHORT).show()
+                        progressDialog.dismiss()
+                        Toast.makeText(this@ChangePasswordActivity, "Greška u konekciji: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onResponse(call: Call, response: Response) {
                     runOnUiThread {
+                        progressDialog.dismiss()
                         if (response.isSuccessful) {
                             Toast.makeText(this@ChangePasswordActivity, "Lozinka uspešno promenjena!", Toast.LENGTH_SHORT).show()
-                            finish() // Zatvaranje aktivnosti nakon uspeha
+
+                            // Resetovanje polja
+                            oldPasswordEditText.text.clear()
+                            newPasswordEditText.text.clear()
+
+                            // Vraćanje na login ekran
+                            val intent = Intent(this@ChangePasswordActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
                         } else {
-                            Toast.makeText(this@ChangePasswordActivity, "Greška: ${response.message}", Toast.LENGTH_SHORT).show()
+                            val errorBody = response.body?.string()
+                            val errorMessage = if (!errorBody.isNullOrEmpty()) {
+                                try {
+                                    JSONObject(errorBody).optString("error", "Neuspela promena lozinke")
+                                } catch (e: Exception) {
+                                    "Neuspela promena lozinke"
+                                }
+                            } else {
+                                "Neuspela promena lozinke"
+                            }
+                            Toast.makeText(this@ChangePasswordActivity, errorMessage, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             })
+        }
+
+        // Dugme za povratak na login ekran
+        backToLoginButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

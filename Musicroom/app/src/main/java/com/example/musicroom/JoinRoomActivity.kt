@@ -14,7 +14,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 class JoinRoomActivity : AppCompatActivity() {
 
-    private val serverUrl = "http://10.0.2.2:8080/joinRoom" // IP servera
+    private val serverUrl = "https://zavrsnirmas.onrender.com/joinRoom" // IP servera
 
     override fun onCreate(savedInstanceState: Bundle?) {
 

@@ -16,4 +16,5 @@
     <item name="roomTitleTextView" type="id" />
     <item name="playSongButton" type="id" />
     <item name="queueRecyclerView" type="id" />
+    <item name="loginTextView" type="id" />
 </resources>

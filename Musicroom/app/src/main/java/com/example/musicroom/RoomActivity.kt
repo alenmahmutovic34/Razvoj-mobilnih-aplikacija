@@ -37,6 +37,9 @@ class RoomActivity : AppCompatActivity() {
     private var roomCode: String? = null
     private var roomName: String? = null
     private var webSocket: WebSocket? = null
+    private lateinit var userAdapter: ArrayAdapter<String>
+    private val userList = mutableListOf<String>()
+
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -53,6 +56,7 @@ class RoomActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("RoomActivity", "📢 Učitano iz Intent-a: roomName = $roomName, roomCode = $roomCode")
+
 
         super.onCreate(savedInstanceState)
 
@@ -155,17 +159,17 @@ class RoomActivity : AppCompatActivity() {
 
     private fun connectToWebSocket() {
         val client = OkHttpClient()
-        val request = Request.Builder().url("ws://10.0.2.2:8080").build()
+        val request = Request.Builder().url("wss://zavrsnirmas.onrender.com").build()
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val message = JSONObject(text)
                 when (message.getString("type")) {
-                    "roomJoined" -> {
+                    "roomJoined", "updateQueue" -> {
                         val songs = message.getJSONArray("songs")
                         val updatedSongs = parseSongsFromJsonArray(songs)
                         runOnUiThread {
                             playbackQueue.clear()
-                            playbackQueue.addAll(updatedSongs)
+                            playbackQueue.addAll(updatedSongs.sortedByDescending { it.votes })
                             queueAdapter.updateQueue(playbackQueue)
                         }
                     }
@@ -252,7 +256,7 @@ class RoomActivity : AppCompatActivity() {
         }
 
 
-}
+    }
 
 
     private fun addSongToQueue(song: Song) {
@@ -309,7 +313,8 @@ class RoomActivity : AppCompatActivity() {
             title = songJson.getString("title"),
             artist = Artist(songJson.getString("artist")),
             album = Album(songJson.getString("album")),
-            preview = songJson.getString("preview")
+            preview = songJson.getString("preview"),
+            votes = songJson.optInt("votes", 1)
         )
     }
 }

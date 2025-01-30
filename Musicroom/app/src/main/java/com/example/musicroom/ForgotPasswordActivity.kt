@@ -11,7 +11,7 @@ import org.json.JSONObject
 import java.io.IOException
 
 class ForgotPasswordActivity : AppCompatActivity() {
-    private val serverUrl = "http://10.0.2.2:8080/forgotPassword" // Endpoint na serveru za zaboravljenu lozinku
+    private val serverUrl = "https://zavrsnirmas.onrender.com/forgotPassword" // Endpoint na serveru za zaboravljenu lozinku
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

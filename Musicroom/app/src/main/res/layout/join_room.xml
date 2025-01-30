@@ -1,23 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:background="@color/background_color"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- Title -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Join a Room"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Separator Line -->
+    <View
+        android:layout_width="300dp"
+        android:layout_height="2dp"
+        android:background="@color/white"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Room Code Input -->
     <EditText
         android:id="@+id/roomCodeEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Unesite kod sobe"
-        android:inputType="text"
-        android:padding="8dp" />
+        android:background="@drawable/edittext_background"
+        android:hint="Enter Room Code"
+        android:textColorHint="@color/hint_color"
+        android:drawableStart="@android:drawable/ic_menu_info_details"
+        android:drawablePadding="12dp"
+        android:padding="14dp"
+        android:textColor="@color/white"
+        android:inputType="text" />
 
+    <!-- Join Room Button (Green) -->
     <Button
         android:id="@+id/joinRoomButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Pridruži se sobi" />
+        android:layout_marginTop="24dp"
+        android:padding="14dp"
+        android:text="Join Room"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/green_button"
+        android:drawableStart="@android:drawable/ic_menu_send"
+        android:drawablePadding="12dp"
+        app:cornerRadius="12dp"/>
+
 </LinearLayout>

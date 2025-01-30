@@ -76,16 +76,6 @@
         android:layout_below="@id/passwordEditText"
         android:layout_marginTop="8dp">
 
-        <CheckBox
-            android:id="@+id/rememberMeCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:text="Remember me"
-            android:textColor="#FFFFFFFF"
-            android:fontFamily="@font/jaro" />
-
         <TextView
             android:id="@+id/forgotPasswordText"
             android:layout_width="wrap_content"
@@ -93,11 +83,14 @@
             android:layout_alignBaseline="@id/passwordEditText"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="5dp"
             android:text="Forgot password"
             android:textColor="#FFFFFFFF"
             android:fontFamily="@font/jaro" />
+
+
     </RelativeLayout>
+
 
     <Button
         android:id="@+id/loginButton"
@@ -105,7 +98,7 @@
         android:layout_height="50dp"
         android:layout_below="@id/passwordEditText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="40dp"
         android:backgroundTint="#FFD9D9D9"
         android:text="Login"
         android:textColor="#FF000000"
@@ -120,7 +113,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:backgroundTint="#FFD9D9D9"
-        android:text="Promeni lozinku"
+        android:text="Change password"
         android:textColor="#FF000000"
         android:fontFamily="@font/jaro"
         app:cornerRadius="5dp" />
@@ -129,10 +122,12 @@
         android:id="@+id/createAccountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
-        android:layout_marginTop="550dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="490dp"
         android:text="Create account"
         android:textSize="17sp"
         android:textColor="#FFFFFFFF"
         android:fontFamily="@font/jaro" />
+
+
 </RelativeLayout>

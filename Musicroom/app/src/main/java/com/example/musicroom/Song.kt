@@ -4,5 +4,6 @@ data class Song(
     val title: String,
     val artist: Artist,
     val album: Album,
-    val preview: String
+    val preview: String,
+    var votes: Int = 1
 )

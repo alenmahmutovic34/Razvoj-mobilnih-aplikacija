@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerUser(username: String, password: String, email: String) {
-        val url = "http://10.0.2.2:8080/register" // Promeni na odgovarajući URL servera
+        val url = "https://zavrsnirmas.onrender.com/register" // Promeni na odgovarajući URL servera
         val client = OkHttpClient()
 
         // Kreiraj JSON payload

@@ -15,7 +15,7 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    private val serverUrl = "http://10.0.2.2:8080/login" // URL vašeg servera
+    private val serverUrl = "https://zavrsnirmas.onrender.com/login" // URL vašeg servera
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

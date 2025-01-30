@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <color name="background_color">#121212</color>
+    <color name="button_color">#FF4081</color>
+    <color name="hint_color">#B0BEC5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="green_button">#4CAF50</color>
+    <color name="gray_button">#757575</color>
+    <color name="play_button">#4CAF50</color>
+    <color name="stop_button">#D32F2F</color>
+    <color name="exit_button">#FF5722</color>
+    <color name="card_background">#1E1E1E</color>
+    <color name="song_title_color">#FFD700</color>  <!-- Zlatna boja za naziv pesme -->
+    <color name="song_artist_color">#B0BEC5</color>  <!-- Svetlosiva boja za izvođača -->
+    <color name="vote_color">#FF9800</color>
+
 </resources>

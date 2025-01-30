@@ -14,7 +14,7 @@ import java.io.IOException
 import java.util.UUID
 
 class CreateRoomActivity : AppCompatActivity() {
-    private val serverUrl = "http://10.0.2.2:8080/createRoom"
+    private val serverUrl = "https://zavrsnirmas.onrender.com/createRoom"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,10 +88,12 @@ class CreateRoomActivity : AppCompatActivity() {
                             putExtra("roomCode", roomCode)
                             putExtra("roomName", roomName)
                             putExtra("username", roomUsername)
+                            putExtra("isCreator", true) // ✅ Ovim kažemo RoomActivity-ju da je kreator
                         }
                         startActivity(intent)
                         finish()
                     }
+
                 } else {
                     runOnUiThread {
                         Toast.makeText(this@CreateRoomActivity, "Došlo je do greške!", Toast.LENGTH_SHORT).show()
