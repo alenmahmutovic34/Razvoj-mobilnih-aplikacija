@@ -23,6 +23,7 @@ class CreateRoomActivity : AppCompatActivity() {
         val roomNameEditText = findViewById<EditText>(R.id.roomNameEditText)
         val maxUsersEditText = findViewById<EditText>(R.id.maxUsersEditText)
         val createRoomButton = findViewById<Button>(R.id.createRoomButton)
+        val backToHomeButton = findViewById<Button>(R.id.backToHomeButton) // Dodajte dugme za povratak na Home
 
         // Get username from SharedPreferences
         val sharedPrefs = getSharedPreferences("MusicRoomPrefs", MODE_PRIVATE)
@@ -52,6 +53,13 @@ class CreateRoomActivity : AppCompatActivity() {
             }
 
             sendCreateRoomRequest(json)
+        }
+
+        // Povratak na Home ekran
+        backToHomeButton.setOnClickListener {
+            val intent = Intent(this, Home::class.java) // ili MainActivity
+            startActivity(intent)
+            finish() // Završava trenutnu aktivnost
         }
     }
 

@@ -22,6 +22,7 @@ class JoinRoomActivity : AppCompatActivity() {
 
         val roomCodeEditText: EditText = findViewById(R.id.roomCodeEditText)
         val joinRoomButton: Button = findViewById(R.id.joinRoomButton)
+        val backToHomeButton: Button = findViewById(R.id.backToHomeButton) // Dodajte dugme za povratak na Home
 
         joinRoomButton.setOnClickListener {
             val roomCode = roomCodeEditText.text.toString().trim()
@@ -32,6 +33,13 @@ class JoinRoomActivity : AppCompatActivity() {
             }
 
             joinRoom(roomCode)
+        }
+
+        // Povratak na Home ekran
+        backToHomeButton.setOnClickListener {
+            val intent = Intent(this, Home::class.java) // ili MainActivity
+            startActivity(intent)
+            finish() // Završava trenutnu aktivnost
         }
     }
 

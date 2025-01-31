@@ -56,4 +56,19 @@
         android:drawablePadding="12dp"
         app:cornerRadius="12dp"/>
 
+    <!-- Back to Home Button -->
+    <Button
+        android:id="@+id/backToHomeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="14dp"
+        android:text="Back to Home"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/gray_button"
+        android:drawableStart="@android:drawable/ic_media_previous"
+        android:drawablePadding="12dp"
+        app:cornerRadius="12dp"/>
+
 </LinearLayout>

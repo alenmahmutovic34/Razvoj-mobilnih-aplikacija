@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
 
-    private const val BASE_URL = "https://api.deezer.com/"
+    private const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
 
     val deezerApiService: DeezerApiService by lazy {
         Retrofit.Builder()

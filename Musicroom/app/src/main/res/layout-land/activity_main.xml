@@ -1,27 +1,27 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@drawable/background_image"
     android:padding="20dp"
-    tools:context=".LoginActivity">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- Leva strana: Logo -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:id="@+id/logoContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center">
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp">
 
         <ImageView
             android:id="@+id/logoImage"
-            android:layout_width="150dp"
-            android:layout_height="70dp"
-            android:contentDescription="Logo"
-            android:src="@drawable/ic_logo" />
+            android:layout_width="177dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_logo"
+            android:contentDescription="Logo" />
 
         <TextView
             android:id="@+id/welcomeText"
@@ -29,94 +29,111 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="WELCOME BACK!"
-            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:fontFamily="@font/irish_grover"
-            android:gravity="center" />
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/irish_grover" />
     </LinearLayout>
 
-    <!-- Desna strana: Forma za prijavu -->
-    <LinearLayout
+    <!-- Adjust EditText for Username in landscape -->
+    <EditText
+        android:id="@+id/usernameEditText"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_height="30dp"
+        android:layout_below="@id/logoContainer"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/white_edittext"
+        android:hint="Username"
+        android:drawableStart="@drawable/ic_user"
+        android:drawablePadding="50dp"
+        android:textColor="#FF000000"
+        android:textColorHint="#FF000000"
+        android:fontFamily="@font/jaro"
+        android:paddingStart="0dp"
+        android:padding="0dp" />
 
-        <EditText
-            android:id="@+id/usernameEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/white_edittext"
-            android:hint="Username"
-            android:drawableStart="@drawable/ic_user"
-            android:drawablePadding="10dp"
-            android:padding="10dp"
-            android:textColor="#000000"
-            android:textColorHint="#000000"
-            android:fontFamily="@font/jaro" />
+    <!-- Adjust EditText for Password in landscape -->
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/usernameEditText"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/white_edittext"
+        android:hint="Password"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="50dp"
+        android:inputType="textPassword"
+        android:textColor="#FF000000"
+        android:textColorHint="#FF000000"
+        android:fontFamily="@font/jaro"
+        android:paddingStart="0dp"
+        android:padding="0dp" />
 
-        <EditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/white_edittext"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:drawableStart="@drawable/ic_lock"
-            android:drawablePadding="10dp"
-            android:padding="10dp"
-            android:textColor="#000000"
-            android:textColorHint="#000000"
-            android:fontFamily="@font/jaro" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <CheckBox
-                android:id="@+id/rememberMeCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Remember me"
-                android:textColor="#FFFFFF"
-                android:fontFamily="@font/jaro"
-                android:layout_alignParentStart="true" />
-
-            <TextView
-                android:id="@+id/forgotPasswordText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forgot password"
-                android:textColor="#FFFFFF"
-                android:layout_alignParentEnd="true"
-                android:fontFamily="@font/jaro" />
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Login"
-            android:backgroundTint="#D9D9D9"
-            app:cornerRadius="5dp"
-            android:textColor="#000000"
-            android:fontFamily="@font/jaro" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordEditText"
+        android:layout_marginTop="8dp">
 
         <TextView
-            android:id="@+id/createAccountText"
+            android:id="@+id/forgotPasswordText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Create account"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp"
+            android:layout_alignBaseline="@id/passwordEditText"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:text="Forgot password"
+            android:textColor="#FFFFFFFF"
             android:fontFamily="@font/jaro" />
-    </LinearLayout>
-</LinearLayout>
+    </RelativeLayout>
+
+    <!-- Adjust Login Button for Landscape -->
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/passwordEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#FFD9D9D9"
+        android:text="Login"
+        android:textColor="#FF000000"
+        android:fontFamily="@font/jaro"
+        app:cornerRadius="5dp" />
+
+    <!-- Adjust Change Password Button for Landscape -->
+    <Button
+        android:id="@+id/changePasswordButton"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/createAccountText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FFD9D9D9"
+        android:text="Change password"
+        android:textColor="#FF000000"
+        android:fontFamily="@font/jaro"
+        app:cornerRadius="5dp" />
+
+    <!-- Adjust Create Account Text for Landscape -->
+    <TextView
+        android:id="@+id/createAccountText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="490dp"
+        android:text="Create account"
+        android:textSize="17sp"
+        android:textColor="#FFFFFFFF"
+        android:fontFamily="@font/jaro" />
+
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.musicroom
 
 import android.content.*
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicroom.adapters.QueueAdapter
 import com.example.musicroom.adapters.SongSearchAdapter
+import com.example.musicroom.adapters.UserAdapter
 import com.example.musicroom.api.Album
 import com.example.musicroom.api.Artist
 import com.example.musicroom.api.DeezerApiService
@@ -28,6 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RoomActivity : AppCompatActivity() {
 
+    private var mediaPlayer: MediaPlayer? = null
     private lateinit var deezerApiService: DeezerApiService
     private lateinit var songSearchAdapter: SongSearchAdapter
     private lateinit var queueAdapter: QueueAdapter
@@ -37,9 +40,10 @@ class RoomActivity : AppCompatActivity() {
     private var roomCode: String? = null
     private var roomName: String? = null
     private var webSocket: WebSocket? = null
-    private lateinit var userAdapter: ArrayAdapter<String>
+    private lateinit var userAdapter: UserAdapter
     private val userList = mutableListOf<String>()
     private var currentlyPlayingTextView: TextView? = null
+
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -154,6 +158,22 @@ class RoomActivity : AppCompatActivity() {
         if (isCreator) {
             val intent = Intent(this, MusicService::class.java)
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    public override fun onPause() {
+        super.onPause()
+        // Pause music when the app goes into the background (or call is incoming)
+        Log.d("RoomActivity", "Activity is paused")
+        mediaPlayer?.pause()  // Pauses the music
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        // Resume music when the app comes back into the foreground (after a call)
+        Log.d("RoomActivity", "Activity is resumed")
+        if (mediaPlayer != null && !mediaPlayer!!.isPlaying) {
+            mediaPlayer?.start()  // Starts the music if it's not already playing
         }
     }
 

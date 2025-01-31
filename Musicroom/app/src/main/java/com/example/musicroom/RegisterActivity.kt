@@ -33,7 +33,19 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            registerUser(username, password, email)
+            if (!isValidEmail(email)) {
+                Toast.makeText(this, "Molimo unesite validnu email adresu sa @ i .com", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Provera da li korisničko ime već postoji
+            checkUsernameAvailability(username) { isAvailable ->
+                if (isAvailable) {
+                    registerUser(username, password, email)
+                } else {
+                    Toast.makeText(this, "Korisničko ime je već zauzeto!", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         backToHomeButton.setOnClickListener {
@@ -43,25 +55,66 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerUser(username: String, password: String, email: String) {
-        val url = "https://zavrsnirmas.onrender.com/register" // Promeni na odgovarajući URL servera
+    // Funkcija koja proverava dostupnost korisničkog imena
+    private fun checkUsernameAvailability(username: String, callback: (Boolean) -> Unit) {
+        val url = "https://zavrsnirmas.onrender.com/check-username" // Novi endpoint za proveru korisničkog imena
         val client = OkHttpClient()
 
-        // Kreiraj JSON payload
         val json = JSONObject().apply {
             put("username", username)
-            put("password", password)
-            put("email", email)
         }
 
-        // Kreiraj HTTP zahtev
         val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
         val request = Request.Builder()
             .url(url)
             .post(body)
             .build()
 
-        // Pošalji HTTP POST zahtev
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@RegisterActivity, "Greška pri proveri korisničkog imena: ${e.message}", Toast.LENGTH_SHORT).show()
+                    callback(true)  // Pretpostavimo da je korisničko ime dostupno ako je došlo do greške
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                runOnUiThread {
+                    if (response.isSuccessful) {
+                        val jsonResponse = JSONObject(response.body?.string() ?: "")
+                        val isAvailable = jsonResponse.optBoolean("isAvailable", false)
+                        callback(isAvailable)
+                    } else {
+                        Toast.makeText(this@RegisterActivity, "Greška pri proveri korisničkog imena.", Toast.LENGTH_SHORT).show()
+                        callback(true)
+                    }
+                }
+            }
+        })
+    }
+
+    // Funkcija koja proverava validnost emaila
+    private fun isValidEmail(email: String): Boolean {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.com$".toRegex()
+        return email.matches(emailRegex)
+    }
+
+    private fun registerUser(username: String, password: String, email: String) {
+        val url = "https://zavrsnirmas.onrender.com/register" // URL za registraciju
+        val client = OkHttpClient()
+
+        val json = JSONObject().apply {
+            put("username", username)
+            put("password", password)
+            put("email", email)
+        }
+
+        val body = RequestBody.create("application/json; charset=utf-8".toMediaTypeOrNull(), json.toString())
+        val request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {

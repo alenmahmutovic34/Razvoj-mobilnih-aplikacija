@@ -24,8 +24,9 @@ class MusicService : Service() {
         try {
             stopSong()
             mediaPlayer = MediaPlayer().apply {
-                setDataSource(previewUrl)
+                setDataSource(previewUrl) // Provjeri da li je ovo pravi URL za cijelu pjesmu, a ne samo preview
                 setOnPreparedListener {
+                    seekTo(0) // Osiguravamo da pjesma počinje od početka
                     it.start()
                     Log.d("MusicService", "Playing song: $songTitle by $artistName")
                 }
