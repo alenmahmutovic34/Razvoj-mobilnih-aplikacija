@@ -15,5 +15,6 @@
     <color name="song_title_color">#FFD700</color>  <!-- Zlatna boja za naziv pesme -->
     <color name="song_artist_color">#B0BEC5</color>  <!-- Svetlosiva boja za izvođača -->
     <color name="vote_color">#FF9800</color>
+    <color name="red_button_color">#FF0000</color>
 
 </resources>

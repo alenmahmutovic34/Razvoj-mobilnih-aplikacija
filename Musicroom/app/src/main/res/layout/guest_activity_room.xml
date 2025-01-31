@@ -114,36 +114,7 @@
             android:padding="8dp"
             app:cardCornerRadius="12dp"/>
 
-        <!-- Control Buttons -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center">
 
-            <Button
-                android:id="@+id/playButton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Play"
-                android:backgroundTint="@color/play_button"
-                android:textColor="@color/black"
-                app:cornerRadius="10dp"/>
-
-            <View android:layout_width="8dp" android:layout_height="match_parent"/>
-
-            <Button
-                android:id="@+id/stopButton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Stop"
-                android:backgroundTint="@color/stop_button"
-                android:textColor="@color/white"
-                app:cornerRadius="10dp"/>
-        </LinearLayout>
 
         <!-- Exit Room Button -->
         <Button

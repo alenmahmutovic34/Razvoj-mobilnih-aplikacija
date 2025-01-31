@@ -39,7 +39,7 @@ class RoomActivity : AppCompatActivity() {
     private var webSocket: WebSocket? = null
     private lateinit var userAdapter: ArrayAdapter<String>
     private val userList = mutableListOf<String>()
-
+    private var currentlyPlayingTextView: TextView? = null
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -56,7 +56,6 @@ class RoomActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("RoomActivity", "📢 Učitano iz Intent-a: roomName = $roomName, roomCode = $roomCode")
-
 
         super.onCreate(savedInstanceState)
 
@@ -75,9 +74,6 @@ class RoomActivity : AppCompatActivity() {
 
         deezerApiService = retrofit.create(DeezerApiService::class.java)
 
-        // 🔹 Sada možemo koristiti deezerApiService sigurno
-        Log.d("RoomActivity", "Deezer API servis je inicijalizovan.")
-
         // Preuzimanje podataka sobe iz Intent-a
         roomCode = intent.getStringExtra("roomCode") ?: "Nepoznato"
         roomName = intent.getStringExtra("roomName") ?: "Nepoznato"
@@ -89,7 +85,7 @@ class RoomActivity : AppCompatActivity() {
         val exitRoomButton: Button = findViewById(R.id.exitRoomButton)
         val songSearchInput: EditText? = findViewById(R.id.songInputEditText)
         val searchSongButton: Button? = findViewById(R.id.searchSongButton)
-
+        currentlyPlayingTextView = findViewById(R.id.currentlyPlayingTextView)
 
         roomInfoTextView.text = "Soba: $roomName\nKod sobe: $roomCode"
 
@@ -97,7 +93,7 @@ class RoomActivity : AppCompatActivity() {
         queueRecyclerView.layoutManager = LinearLayoutManager(this)
 
         songSearchAdapter = SongSearchAdapter { song -> addSongToQueue(song) }
-        queueAdapter = QueueAdapter()
+        queueAdapter = QueueAdapter(isCreator)
 
         songListRecyclerView.adapter = songSearchAdapter
         queueRecyclerView.adapter = queueAdapter
@@ -107,7 +103,7 @@ class RoomActivity : AppCompatActivity() {
             Log.d(
                 "RoomActivity",
                 "Guest kliknuo na dugme pretrage"
-            ) // Ovo će se pojaviti u Logcat-u
+            )
             if (query.isNotEmpty()) {
                 searchSongs(query)
             } else {
@@ -115,24 +111,37 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
-
-
         // UI elementi specifični za kreatora
         if (isCreator) {
             val playButton: Button = findViewById(R.id.playButton)
             val stopButton: Button = findViewById(R.id.stopButton)
-            val currentlyPlayingTextView: TextView = findViewById(R.id.currentlyPlayingTextView)
-
 
             playButton.setOnClickListener { playNextSong() }
             stopButton.setOnClickListener {
                 musicService?.stopSong()
                 Toast.makeText(this, "Reprodukcija zaustavljena", Toast.LENGTH_SHORT).show()
-            }
 
+                val stopMessage = JSONObject().apply {
+                    put("type", "stopSong")
+                    put("roomCode", roomCode)
+                }
+
+                webSocket?.send(stopMessage.toString())
+            }
         }
 
         exitRoomButton.setOnClickListener {
+            // Pošalji poruku serveru da je korisnik napustio sobu
+            val leaveMessage = JSONObject().apply {
+                put("type", "leaveRoom")
+                put("roomCode", roomCode)
+            }
+            webSocket?.send(leaveMessage.toString())
+
+            // Zatvori WebSocket vezu
+            webSocket?.close(1000, null)
+
+            // Prebaci korisnika na početni ekran
             val intent = Intent(this, Home::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
@@ -170,44 +179,21 @@ class RoomActivity : AppCompatActivity() {
                         runOnUiThread {
                             playbackQueue.clear()
                             playbackQueue.addAll(updatedSongs.sortedByDescending { it.votes })
-                            queueAdapter.updateQueue(playbackQueue)
+                            queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
                         }
                     }
 
-                    "newSong" -> {
-                        val songJson = message.getJSONObject("song")
-                        val newSong = parseSongFromJson(songJson)
+                    "currentlyPlaying" -> {
+                        val songJson = message.optJSONObject("song")
                         runOnUiThread {
-                            playbackQueue.add(newSong)
-                            queueAdapter.updateQueue(playbackQueue)
+                            if (songJson != null) {
+                                val song = parseSongFromJson(songJson)
+                                currentlyPlayingTextView?.text = "Trenutno svira: ${song.title} - ${song.artist.name}"
+                            } else {
+                                currentlyPlayingTextView?.text = "Trenutno svira: None"
+                            }
                         }
                     }
-
-                    "playSong" -> {
-                        val songJson = message.getJSONObject("song")
-                        val songToRemove = parseSongFromJson(songJson)
-                        runOnUiThread {
-                            playbackQueue.remove(songToRemove)
-                            queueAdapter.updateQueue(playbackQueue)
-                        }
-                        webSocket.send(JSONObject().apply {
-                            put("type", "removeSong")
-                            put("roomCode", roomCode)
-                            put("song", songJson)
-                        }.toString())
-                    }
-                    "removeSong" -> {
-                        val songJson = message.getJSONObject("song")
-                        val songToRemove = parseSongFromJson(songJson)
-
-                        Log.d("RoomActivity", "📢 Primljena removeSong poruka za pesmu: ${songToRemove.title}")
-
-                        runOnUiThread {
-                            playbackQueue.remove(songToRemove)
-                            queueAdapter.updateQueue(playbackQueue)
-                        }
-                    }
-
                 }
             }
         })
@@ -225,7 +211,7 @@ class RoomActivity : AppCompatActivity() {
         Log.d(
             "RoomActivity",
             "searchSongs() je pokrenut sa upitom: $query"
-        ) // Proveri da li se ovo pojavi
+        )
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = deezerApiService.searchSongs(query).execute()
@@ -235,7 +221,7 @@ class RoomActivity : AppCompatActivity() {
                     Log.d(
                         "RoomActivity",
                         "Pronađeno pesama: ${songs.size}"
-                    ) // Proveri da li se ovo pojavi
+                    )
                     runOnUiThread {
                         if (songs.isNotEmpty()) {
                             songSearchAdapter.updateSongs(songs)
@@ -254,10 +240,7 @@ class RoomActivity : AppCompatActivity() {
                 Log.e("RoomActivity", "Izuzetak tokom pretrage: ${e.message}", e)
             }
         }
-
-
     }
-
 
     private fun addSongToQueue(song: Song) {
         val songMessage = JSONObject().apply {
@@ -276,7 +259,7 @@ class RoomActivity : AppCompatActivity() {
     private fun playNextSong() {
         if (playbackQueue.isNotEmpty()) {
             val nextSong = playbackQueue.removeAt(0)
-            queueAdapter.updateQueue(playbackQueue)
+            queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
             musicService?.playSong(nextSong.preview, nextSong.title, nextSong.artist.name)
 
             val playMessage = JSONObject().apply {
@@ -298,6 +281,22 @@ class RoomActivity : AppCompatActivity() {
         }
     }
 
+    private fun removeSongFromQueue(song: Song) {
+        playbackQueue.remove(song)
+        queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
+
+        val removeMessage = JSONObject().apply {
+            put("type", "removeSong")
+            put("roomCode", roomCode)
+            put("song", JSONObject().apply {
+                put("title", song.title)
+                put("artist", song.artist.name)
+                put("album", song.album.title)
+                put("preview", song.preview)
+            })
+        }
+        webSocket?.send(removeMessage.toString()) // Send message to WebSocket
+    }
 
     private fun parseSongsFromJsonArray(jsonArray: JSONArray): List<Song> {
         val songs = mutableListOf<Song>()

@@ -88,6 +88,18 @@
                 android:layout_marginStart="4dp"/>
         </LinearLayout>
 
+        <!-- Delete Button (Visible only in queue) -->
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/red_button_color"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"/> <!-- Initially hidden, will be shown only in the queue -->
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -17,8 +17,6 @@ class JoinRoomActivity : AppCompatActivity() {
     private val serverUrl = "https://zavrsnirmas.onrender.com/joinRoom" // IP servera
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.join_room)
 
@@ -78,23 +76,24 @@ class JoinRoomActivity : AppCompatActivity() {
                     runOnUiThread {
                         Toast.makeText(this@JoinRoomActivity, "Uspešno ste se pridružili sobi!", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@JoinRoomActivity, RoomActivity::class.java).apply {
-                            putExtra("roomCode", roomCode)  // PROVJERI DA LI JE OVO DEFINISANO U `joinRoom` FUNKCIJI
-                            putExtra("roomName", roomName)  // SAD SIGURNO ŠALJEMO `roomName`
+                            putExtra("roomCode", roomCode)
+                            putExtra("roomName", roomName)
                             putExtra("isCreator", isCreator)
                         }
                         startActivity(intent)
                         finish()
                     }
                 } else {
-                    val errorResponse = responseBody?.let { JSONObject(it).optString("error", "Kod sobe nije pronađen") }
+                    val errorResponse = responseBody?.let { JSONObject(it).optString("error", "Došlo je do greške!") }
                     runOnUiThread {
-                        Toast.makeText(this@JoinRoomActivity, errorResponse, Toast.LENGTH_SHORT).show()
+                        if (errorResponse == "Soba je puna!") {
+                            Toast.makeText(this@JoinRoomActivity, "Soba je puna!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@JoinRoomActivity, errorResponse, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-
         })
     }
-
-
 }
