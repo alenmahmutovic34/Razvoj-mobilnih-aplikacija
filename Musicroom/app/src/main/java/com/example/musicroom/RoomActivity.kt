@@ -44,6 +44,7 @@ class RoomActivity : AppCompatActivity() {
     private var username: String? = null
     private var webSocket: WebSocket? = null
     private var currentlyPlayingTextView: TextView? = null
+    private val addedSongs = mutableSetOf<String>()
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -113,7 +114,17 @@ class RoomActivity : AppCompatActivity() {
         queueRecyclerView.layoutManager = LinearLayoutManager(this)
         userListRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        songSearchAdapter = SongSearchAdapter { song -> addSongToQueue(song) }
+        songSearchAdapter = SongSearchAdapter { song ->
+            val songKey = "${song.title}-${song.artist.name}"
+            if(songKey in addedSongs) {
+                Toast.makeText(
+                    this,
+                    "Vec ste dodali ovu pjesmu u red za slusanje", Toast.LENGTH_SHORT).show()
+            } else {
+                addSongToQueue(song)
+                addedSongs.add(songKey)
+            }
+        }
         queueAdapter = QueueAdapter(isCreator)
         userAdapter = UserAdapter(userList)
 
@@ -187,7 +198,23 @@ class RoomActivity : AppCompatActivity() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 val message = JSONObject(text)
                 when (message.getString("type")) {
-                    "roomJoined", "updateQueue" -> {
+                    "roomJoined" -> {
+                        val songs = message.getJSONArray("songs")
+                        val updatedSongs = parseSongsFromJsonArray(songs)
+                        runOnUiThread {
+                            playbackQueue.clear()
+                            playbackQueue.addAll(updatedSongs.sortedByDescending { it.votes })
+                            queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
+
+                            addedSongs.clear()
+                            updatedSongs.forEach { song ->
+                                val songKey = "${song.title}-${song.artist.name}"
+                                addedSongs.add(songKey)
+                            }
+                        }
+                    }
+
+                    "updateQueue" -> {
                         val songs = message.getJSONArray("songs")
                         val updatedSongs = parseSongsFromJsonArray(songs)
                         runOnUiThread {
@@ -196,6 +223,7 @@ class RoomActivity : AppCompatActivity() {
                             queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
                         }
                     }
+
                     "updateUsers" -> {
                         val usersJsonArray = message.getJSONArray("users")
                         val updatedUsers = mutableListOf<String>()
@@ -292,6 +320,9 @@ class RoomActivity : AppCompatActivity() {
             queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
             musicService?.playSong(nextSong.preview, nextSong.title, nextSong.artist.name)
 
+            val songKey = "${nextSong.title}-${nextSong.artist.name}"
+            addedSongs.remove(songKey)
+
             val playMessage = JSONObject().apply {
                 put("type", "playSong")
                 put("roomCode", roomCode)
@@ -311,6 +342,9 @@ class RoomActivity : AppCompatActivity() {
     private fun removeSongFromQueue(song: Song) {
         playbackQueue.remove(song)
         queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
+
+        val songKey = "${song.title}-${song.artist.name}"
+        addedSongs.remove(songKey)
 
         val removeMessage = JSONObject().apply {
             put("type", "removeSong")
