@@ -251,11 +251,21 @@ class RoomActivity : AppCompatActivity() {
                             if (songJson != null) {
                                 val song = parseSongFromJson(songJson)
                                 currentlyPlayingTextView?.text = "Trenutno svira: ${song.title} - ${song.artist.name}"
+
+                                val songKey = "${song.title}-${song.artist.name}"
+                                addedSongs.remove(songKey)
                             } else {
                                 currentlyPlayingTextView?.text = "Trenutno svira: None"
                             }
                         }
                     }
+                    "songPlayed" -> {
+                        val songKey = message.getString("songKey")
+                        runOnUiThread {
+                            addedSongs.remove(songKey)
+                        }
+                    }
+
                 }
             }
         })

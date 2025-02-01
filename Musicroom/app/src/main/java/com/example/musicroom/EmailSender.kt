@@ -1,3 +1,4 @@
+// EmailSender.kt
 package com.example.musicroom
 
 import java.util.*
@@ -31,9 +32,11 @@ object EmailSender {
                 setText(message)
             }
 
+            println("Pokušaj slanja emaila na: $recipientEmail")
             Transport.send(mimeMessage)
-            println("Email poslat na: $recipientEmail")
+            println("Email uspešno poslat na: $recipientEmail")
         } catch (e: MessagingException) {
+            println("Greška pri slanju emaila: ${e.message}")
             e.printStackTrace()
         }
     }

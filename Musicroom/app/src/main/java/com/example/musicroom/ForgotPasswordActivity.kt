@@ -1,3 +1,4 @@
+// ForgotPasswordActivity.kt
 package com.example.musicroom
 
 import android.os.Bundle
@@ -23,6 +24,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         sendButton.setOnClickListener {
             val email = emailEditText.text.toString().trim()
+            println("Kliknuto na sendButton sa emailom: $email") // Dodato za debug
 
             if (email.isEmpty()) {
                 Toast.makeText(this, "Molimo unesite email adresu!", Toast.LENGTH_SHORT).show()
@@ -50,6 +52,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
+                println("Greška u konekciji sa serverom: ${e.message}") // Dodato za debug
                 runOnUiThread {
                     Toast.makeText(this@ForgotPasswordActivity, "Greška u konekciji sa serverom", Toast.LENGTH_SHORT).show()
                 }
@@ -57,6 +60,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 val responseBody = response.body?.string()
+                println("Odgovor servera: $responseBody") // Dodato za debug
+
                 if (response.isSuccessful && responseBody != null) {
                     val jsonResponse = JSONObject(responseBody)
                     val message = jsonResponse.optString("message", "Proverite svoj email za novu lozinku.")
@@ -66,6 +71,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     }
                 } else {
                     val errorResponse = responseBody?.let { JSONObject(it).optString("error", "Greška pri obradi zahteva.") }
+                    println("Greška servera: $errorResponse") // Dodato za debug
                     runOnUiThread {
                         Toast.makeText(this@ForgotPasswordActivity, errorResponse, Toast.LENGTH_SHORT).show()
                     }

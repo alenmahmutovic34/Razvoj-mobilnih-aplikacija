@@ -73,7 +73,7 @@ class RegisterActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    Toast.makeText(this@RegisterActivity, "Greška pri proveri korisničkog imena: ${e.message}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@RegisterActivity, "Greška pri proveri korisničkog imena: ${e.message}", Toast.LENGTH_SHORT).show()
                     callback(true)  // Pretpostavimo da je korisničko ime dostupno ako je došlo do greške
                 }
             }
@@ -85,7 +85,7 @@ class RegisterActivity : AppCompatActivity() {
                         val isAvailable = jsonResponse.optBoolean("isAvailable", false)
                         callback(isAvailable)
                     } else {
-                        Toast.makeText(this@RegisterActivity, "Greška pri proveri korisničkog imena.", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@RegisterActivity, "Greška pri proveri korisničkog imena.", Toast.LENGTH_SHORT).show()
                         callback(true)
                     }
                 }
