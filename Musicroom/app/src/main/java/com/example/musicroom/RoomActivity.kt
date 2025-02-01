@@ -358,10 +358,22 @@ class RoomActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        if (username != null && roomCode != null) {
+            val leaveMessage = JSONObject().apply {
+                put("type", "leaveRoom")
+                put("roomCode", roomCode)
+                put("username", username)
+            }
+            webSocket?.send(leaveMessage.toString())
+        }
+
+        webSocket?.close(1000, null)
+
         if (isServiceBound) {
             unbindService(serviceConnection)
             isServiceBound = false
         }
-        webSocket?.close(1000, null)
     }
+
 }

@@ -2,17 +2,31 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:padding="8dp"
+    android:padding="12dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded"
+    android:elevation="4dp"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:id="@+id/userIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_user"
+        android:contentDescription="@string/user_icon"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/circle_background"
+        android:padding="8dp" />
 
     <TextView
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="8dp"
-        android:padding="4dp"
         android:text="Username"
-        android:textSize="16sp" />
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:padding="4dp" />
+
 </LinearLayout>
