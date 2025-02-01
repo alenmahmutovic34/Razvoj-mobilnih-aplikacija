@@ -27,6 +27,11 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 class RoomActivity : AppCompatActivity() {
 
@@ -80,7 +85,6 @@ class RoomActivity : AppCompatActivity() {
             Log.d("RoomActivity", "✅ RoomCode učitan: $roomCode")
         }
 
-
         if (isCreator) {
             setContentView(R.layout.activity_room)
         } else {
@@ -132,15 +136,31 @@ class RoomActivity : AppCompatActivity() {
         queueRecyclerView.adapter = queueAdapter
         userListRecyclerView.adapter = userAdapter
 
-        searchSongButton?.setOnClickListener {
-            val query = songSearchInput?.text.toString().trim()
-            Log.d("RoomActivity", "Pretraga pesama za upit: $query")
-            if (query.isNotEmpty()) {
-                searchSongs(query)
-            } else {
-                Toast.makeText(this, "Unesite ime pesme", Toast.LENGTH_SHORT).show()
+        // Dodajemo TextWatcher za real-time pretragu
+        songSearchInput?.addTextChangedListener(object : TextWatcher {
+            private var searchJob: Job? = null
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                searchJob?.cancel()
+
+                searchJob = CoroutineScope(Dispatchers.Main).launch {
+                    delay(300)
+                    val query = s?.toString()?.trim() ?: ""
+                    if (query.isNotEmpty()) {
+                        searchSongs(query)
+                    } else {
+                        songSearchAdapter.updateSongs(emptyList())
+                    }
+                }
             }
-        }
+        })
+
+        // Sakrivamo dugme za pretragu jer sada imamo real-time pretragu
+        searchSongButton?.visibility = View.GONE
 
         if (isCreator) {
             val playButton: Button = findViewById(R.id.playButton)
@@ -172,7 +192,6 @@ class RoomActivity : AppCompatActivity() {
                 webSocket?.send(leaveMessage.toString())
             }
 
-
             webSocket?.close(1000, null)
 
             val intent = Intent(this, Home::class.java).apply {
@@ -181,7 +200,6 @@ class RoomActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
 
         connectToWebSocket()
 
