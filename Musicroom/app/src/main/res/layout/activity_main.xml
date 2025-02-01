@@ -2,17 +2,17 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background_image"
-    android:padding="20dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background_image"
+    android:padding="20dp">
 
     <LinearLayout
         android:id="@+id/logoContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="80dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="WELCOME BACK!"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
             android:fontFamily="@font/irish_grover" />
@@ -38,96 +38,82 @@
     <EditText
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:layout_below="@id/logoContainer"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/white_edittext"
         android:hint="Username"
         android:drawableStart="@drawable/ic_user"
-        android:drawablePadding="50dp"
+        android:drawablePadding="16dp"
         android:textColor="#FF000000"
-        android:textColorHint="#FF000000"
+        android:textColorHint="#80000000"
         android:fontFamily="@font/jaro"
-        android:paddingStart="0dp"
-        android:padding="0dp" />
+        android:padding="12dp" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:layout_below="@id/usernameEditText"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:background="@drawable/white_edittext"
         android:hint="Password"
         android:drawableStart="@drawable/ic_lock"
-        android:drawablePadding="50dp"
+        android:drawablePadding="16dp"
         android:inputType="textPassword"
         android:textColor="#FF000000"
-        android:textColorHint="#FF000000"
+        android:textColorHint="#80000000"
         android:fontFamily="@font/jaro"
-        android:paddingStart="0dp"
-        android:padding="0dp" />
+        android:padding="12dp" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/forgotPasswordText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/passwordEditText"
-        android:layout_marginTop="8dp">
-
-        <TextView
-            android:id="@+id/forgotPasswordText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/passwordEditText"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="5dp"
-            android:text="Forgot password"
-            android:textColor="#FFFFFFFF"
-            android:fontFamily="@font/jaro" />
-
-
-    </RelativeLayout>
-
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="Forgot password?"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:fontFamily="@font/jaro" />
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_below="@id/passwordEditText"
+        android:layout_below="@id/forgotPasswordText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="#FFD9D9D9"
         android:text="Login"
         android:textColor="#FF000000"
         android:fontFamily="@font/jaro"
-        app:cornerRadius="5dp" />
-
-    <Button
-        android:id="@+id/changePasswordButton"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_below="@id/createAccountText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#FFD9D9D9"
-        android:text="Change password"
-        android:textColor="#FF000000"
-        android:fontFamily="@font/jaro"
-        app:cornerRadius="5dp" />
+        app:cornerRadius="8dp" />
 
     <TextView
         android:id="@+id/createAccountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="130dp"
-        android:layout_marginTop="490dp"
+        android:layout_below="@id/loginButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:text="Create account"
-        android:textSize="17sp"
-        android:textColor="#FFFFFFFF"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
         android:fontFamily="@font/jaro" />
 
-
+    <Button
+        android:id="@+id/changePasswordButton"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/createAccountText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#FFD9D9D9"
+        android:text="Change Password"
+        android:textColor="#FF000000"
+        android:fontFamily="@font/jaro"
+        app:cornerRadius="8dp" />
 </RelativeLayout>

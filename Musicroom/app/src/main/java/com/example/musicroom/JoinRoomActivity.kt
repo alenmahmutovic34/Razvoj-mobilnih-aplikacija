@@ -87,6 +87,7 @@ class JoinRoomActivity : AppCompatActivity() {
                             putExtra("roomCode", roomCode)
                             putExtra("roomName", roomName)
                             putExtra("isCreator", isCreator)
+                            putExtra("username", username)
                         }
                         startActivity(intent)
                         finish()

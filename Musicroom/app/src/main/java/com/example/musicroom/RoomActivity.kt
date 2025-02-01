@@ -34,16 +34,16 @@ class RoomActivity : AppCompatActivity() {
     private lateinit var deezerApiService: DeezerApiService
     private lateinit var songSearchAdapter: SongSearchAdapter
     private lateinit var queueAdapter: QueueAdapter
+    private lateinit var userAdapter: UserAdapter
     private val playbackQueue = mutableListOf<Song>()
+    private val userList = mutableListOf<String>()
     private var musicService: MusicService? = null
     private var isServiceBound = false
     private var roomCode: String? = null
     private var roomName: String? = null
+    private var username: String? = null
     private var webSocket: WebSocket? = null
-    private lateinit var userAdapter: UserAdapter
-    private val userList = mutableListOf<String>()
     private var currentlyPlayingTextView: TextView? = null
-
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -64,6 +64,21 @@ class RoomActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val isCreator = intent.getBooleanExtra("isCreator", false)
+        username = intent.getStringExtra("username")
+        roomCode = intent.getStringExtra("roomCode") ?: "Nepoznato"
+
+        if (username.isNullOrBlank()) {
+            Log.e("RoomActivity", "❌ Greška: Username nije dobijen iz Intent-a!")
+        } else {
+            Log.d("RoomActivity", "✅ Username učitan: $username")
+        }
+
+        if (roomCode == "Nepoznato") {
+            Log.e("RoomActivity", "❌ Greška: RoomCode nije postavljen!")
+        } else {
+            Log.d("RoomActivity", "✅ RoomCode učitan: $roomCode")
+        }
+
 
         if (isCreator) {
             setContentView(R.layout.activity_room)
@@ -72,20 +87,20 @@ class RoomActivity : AppCompatActivity() {
         }
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.deezer.com/") // 🛠️ OBAVEZNO PROVERI DA LI JE URL PRAVILAN
+            .baseUrl("https://api.deezer.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         deezerApiService = retrofit.create(DeezerApiService::class.java)
 
-        // Preuzimanje podataka sobe iz Intent-a
         roomCode = intent.getStringExtra("roomCode") ?: "Nepoznato"
         roomName = intent.getStringExtra("roomName") ?: "Nepoznato"
 
-        // Zajednički UI elementi za kreatora i gosta
+        // UI Elements initialization
         val roomInfoTextView: TextView = findViewById(R.id.roomNameTextView)
         val songListRecyclerView: RecyclerView = findViewById(R.id.songListRecyclerView)
         val queueRecyclerView: RecyclerView = findViewById(R.id.queueRecyclerView)
+        val userListRecyclerView: RecyclerView = findViewById(R.id.userListRecyclerView)
         val exitRoomButton: Button = findViewById(R.id.exitRoomButton)
         val songSearchInput: EditText? = findViewById(R.id.songInputEditText)
         val searchSongButton: Button? = findViewById(R.id.searchSongButton)
@@ -93,21 +108,22 @@ class RoomActivity : AppCompatActivity() {
 
         roomInfoTextView.text = "Soba: $roomName\nKod sobe: $roomCode"
 
+        // RecyclerViews setup
         songListRecyclerView.layoutManager = LinearLayoutManager(this)
         queueRecyclerView.layoutManager = LinearLayoutManager(this)
+        userListRecyclerView.layoutManager = LinearLayoutManager(this)
 
         songSearchAdapter = SongSearchAdapter { song -> addSongToQueue(song) }
         queueAdapter = QueueAdapter(isCreator)
+        userAdapter = UserAdapter(userList)
 
         songListRecyclerView.adapter = songSearchAdapter
         queueRecyclerView.adapter = queueAdapter
+        userListRecyclerView.adapter = userAdapter
 
         searchSongButton?.setOnClickListener {
             val query = songSearchInput?.text.toString().trim()
-            Log.d(
-                "RoomActivity",
-                "Guest kliknuo na dugme pretrage"
-            )
+            Log.d("RoomActivity", "Pretraga pesama za upit: $query")
             if (query.isNotEmpty()) {
                 searchSongs(query)
             } else {
@@ -115,7 +131,6 @@ class RoomActivity : AppCompatActivity() {
             }
         }
 
-        // UI elementi specifični za kreatora
         if (isCreator) {
             val playButton: Button = findViewById(R.id.playButton)
             val stopButton: Button = findViewById(R.id.stopButton)
@@ -135,17 +150,20 @@ class RoomActivity : AppCompatActivity() {
         }
 
         exitRoomButton.setOnClickListener {
-            // Pošalji poruku serveru da je korisnik napustio sobu
-            val leaveMessage = JSONObject().apply {
-                put("type", "leaveRoom")
-                put("roomCode", roomCode)
+            if (username.isNullOrBlank()) {
+                Log.e("RoomActivity", "❌ Greška: Username nije postavljen prilikom izlaska!")
+            } else {
+                val leaveMessage = JSONObject().apply {
+                    put("type", "leaveRoom")
+                    put("roomCode", roomCode)
+                    put("username", username)  // Pobrinimo se da username nije null
+                }
+                webSocket?.send(leaveMessage.toString())
             }
-            webSocket?.send(leaveMessage.toString())
 
-            // Zatvori WebSocket vezu
+
             webSocket?.close(1000, null)
 
-            // Prebaci korisnika na početni ekran
             val intent = Intent(this, Home::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
@@ -153,37 +171,13 @@ class RoomActivity : AppCompatActivity() {
             finish()
         }
 
+
         connectToWebSocket()
 
         if (isCreator) {
             val intent = Intent(this, MusicService::class.java)
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
-    }
-
-    public override fun onPause() {
-        super.onPause()
-        // Pause music when the app goes into the background (or call is incoming)
-        Log.d("RoomActivity", "Activity is paused")
-        mediaPlayer?.pause()  // Pauses the music
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        // Resume music when the app comes back into the foreground (after a call)
-        Log.d("RoomActivity", "Activity is resumed")
-        if (mediaPlayer != null && !mediaPlayer!!.isPlaying) {
-            mediaPlayer?.start()  // Starts the music if it's not already playing
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isServiceBound) {
-            unbindService(serviceConnection)
-            isServiceBound = false
-        }
-        webSocket?.close(1000, null)
     }
 
     private fun connectToWebSocket() {
@@ -202,7 +196,27 @@ class RoomActivity : AppCompatActivity() {
                             queueAdapter.updateQueue(playbackQueue, ::removeSongFromQueue)
                         }
                     }
+                    "updateUsers" -> {
+                        val usersJsonArray = message.getJSONArray("users")
+                        val updatedUsers = mutableListOf<String>()
 
+                        for (i in 0 until usersJsonArray.length()) {
+                            val user = usersJsonArray.getString(i)
+                            if (!user.isNullOrBlank() && user != "null") {  // Filtriramo null vrednosti
+                                updatedUsers.add(user)
+                            }
+                        }
+
+                        runOnUiThread {
+                            Log.d("RoomActivity", "📋 Ažurirana lista korisnika: $updatedUsers")
+                            userList.clear()
+                            userList.addAll(updatedUsers)
+                            userAdapter.notifyDataSetChanged()
+                        }
+
+
+
+                    }
                     "currentlyPlaying" -> {
                         val songJson = message.optJSONObject("song")
                         runOnUiThread {
@@ -222,26 +236,22 @@ class RoomActivity : AppCompatActivity() {
             val joinMessage = JSONObject().apply {
                 put("type", "joinRoom")
                 put("roomCode", it)
+                put("username", username)
             }
             webSocket?.send(joinMessage.toString())
         }
     }
 
+    // Existing methods...
     private fun searchSongs(query: String) {
-        Log.d(
-            "RoomActivity",
-            "searchSongs() je pokrenut sa upitom: $query"
-        )
+        Log.d("RoomActivity", "searchSongs() je pokrenut sa upitom: $query")
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = deezerApiService.searchSongs(query).execute()
 
                 if (response.isSuccessful) {
                     val songs = response.body()?.data ?: emptyList()
-                    Log.d(
-                        "RoomActivity",
-                        "Pronađeno pesama: ${songs.size}"
-                    )
+                    Log.d("RoomActivity", "Pronađeno pesama: ${songs.size}")
                     runOnUiThread {
                         if (songs.isNotEmpty()) {
                             songSearchAdapter.updateSongs(songs)
@@ -292,9 +302,6 @@ class RoomActivity : AppCompatActivity() {
                     put("preview", nextSong.preview)
                 })
             }
-
-            Log.d("RoomActivity", "📡 Šaljem playSong poruku serveru za pesmu: ${nextSong.title}")
-
             webSocket?.send(playMessage.toString())
         } else {
             Toast.makeText(this, "Red za puštanje je prazan", Toast.LENGTH_SHORT).show()
@@ -315,7 +322,7 @@ class RoomActivity : AppCompatActivity() {
                 put("preview", song.preview)
             })
         }
-        webSocket?.send(removeMessage.toString()) // Send message to WebSocket
+        webSocket?.send(removeMessage.toString())
     }
 
     private fun parseSongsFromJsonArray(jsonArray: JSONArray): List<Song> {
@@ -335,5 +342,26 @@ class RoomActivity : AppCompatActivity() {
             preview = songJson.getString("preview"),
             votes = songJson.optInt("votes", 1)
         )
+    }
+
+    public override fun onPause() {
+        super.onPause()
+        mediaPlayer?.pause()
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        if (mediaPlayer != null && !mediaPlayer!!.isPlaying) {
+            mediaPlayer?.start()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isServiceBound) {
+            unbindService(serviceConnection)
+            isServiceBound = false
+        }
+        webSocket?.close(1000, null)
     }
 }
