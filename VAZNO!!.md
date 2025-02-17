@@ -1,0 +1,1 @@
+Ako je aplikacija neaktivna vise od 50 sekundi, server se gasi i ne moze se koristiti aplikacija dok se server ponovo ne pokrene, koristio sam besplatni server na Render.com pa ima ovo ogranicenje i takodje koristen je besplatni api od deezer-a koji ne pusta citave pjesme nego samo dio pjesme koji traje dosta kratko
