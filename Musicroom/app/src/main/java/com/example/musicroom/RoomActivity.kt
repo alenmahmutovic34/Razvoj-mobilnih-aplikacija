@@ -283,6 +283,12 @@ class RoomActivity : AppCompatActivity() {
                             addedSongs.remove(songKey)
                         }
                     }
+                    "songRemoved" -> {
+                        val songKey = message.getString("songKey")
+                        runOnUiThread {
+                            addedSongs.remove(songKey)
+                        }
+                    }
 
                 }
             }

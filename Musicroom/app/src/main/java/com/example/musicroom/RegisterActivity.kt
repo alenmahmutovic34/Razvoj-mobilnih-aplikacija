@@ -95,7 +95,7 @@ class RegisterActivity : AppCompatActivity() {
 
     // Funkcija koja proverava validnost emaila
     private fun isValidEmail(email: String): Boolean {
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.com$".toRegex()
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.(com|ba)$".toRegex()
         return email.matches(emailRegex)
     }
 
